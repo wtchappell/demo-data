@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+class Main
+  def run(args)
+  end
+end
+
+Main.new.run(ARGV)
+
+# vim: set ft=ruby ts=2 sw=2 tw=79 :
