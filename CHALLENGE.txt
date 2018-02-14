@@ -1,0 +1,46 @@
+Basic SRE Coding Challenge
+
+Thank you for accepting the coding challenge! This exercise isn’t intended as a
+programming competition, but to help us understand your approach to problem
+solving and communication. In general, this challenge shouldn’t take more than
+three hours to complete.
+
+Requirements
+Write a command-line utility in either Ruby, Python, Java, or Go, that
+retrieves demographic data for a specified set of U.S. states from a public API
+and outputs that data in the requested format.
+
+Specifically, the utility should:
+● Accept as input parameters:
+  ○ A comma-delimited list of state names
+  ○ A single output-format parameter: “CSV” or “averages”
+● For each state, query the National Broadband Map API to retrieve the census
+ (FIPS) ID for each state
+● For each census ID, query the National Broadband Map Demographics API to
+ retrieve demographic data for each state
+● If the specified output-format parameter is "CSV," output the data for each
+ specified state in CSV format, sorted alphabetically by state name:
+<state name>, <population>, <households>, <income below poverty>, <median income>
+● If the specified output-parameter format is "averages," output a single
+ integer representing the weighted average of "income below poverty" across all
+ the specified input states.
+
+Instructions
+● Please use a public Github repo for your coding challenge. We prefer if you
+ commit your updates incrementally rather than all at once. When you’ve
+ completed the challenge, please email us a link to the repo containing your
+ work.
+● Your repo should contain a README with instructions for building and
+ running your application.
+● In your README, document the assumptions you made when completing the
+ application (since this is a time-constrained exercise, we expect there will be
+ quite a few)!
+● Use of OOP is preferred, but not required
+● Write tests at your own discretion; however, tests may be helpful in making
+ sure that your application meets the requirements.
+
+CensusByGeographyName
+(https://www.broadbandmap.gov/developer/api/census-api-by-geography-name)
+
+DemographicsByGeographyTypeAndId
+(https://www.broadbandmap.gov/developer/api/demographics-api-by-geography-type-and-geography-id)
