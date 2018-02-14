@@ -3,7 +3,40 @@ require 'net/http'
 require 'uri'
 
 class BroadbandAPI
-  def query_demographics_by_state_name(names)
+  # Useful for querying a states FIPS ID from it's name.
+  def query_census_by_state_name(name)
+    query_api(['census', 'state', name], {})
+  end
+
+  def query_demographics_by_state_name(*names)
+    # You could avoid this loop by calling a different API that lists all the
+    # states in one go, especially when the input set (i.e., states in the US)
+    # is so constrained and the results are highly cacheable.
+    all_fips = names.map do |name|
+      states = query_census_by_state_name(name)['state']
+
+      # This is a prefix search API - there's no guarantee that any of the
+      # results match if we passed in bad input.
+      state = states.find { |st| st['name'] == name }
+      fail("No state '#{name}' can be found!") unless state
+
+      state['fips']
+    end
+
+    # Luckily the next call batches. :)
+    query_demographics_by_geography_type_and_id('state', all_fips)
+  end
+
+  # We don't actually use this for anything but states, but we could.
+  def query_demographics_by_geography_type_and_id(type, *ids)
+    query_api(
+      # We'll use the latest data.
+      ['demographic', 'jun2014', type, 'ids', ids.join(',')],
+      # The API in use doesn't appear to support any kind of paging. Therefore,
+      # we *must* request everything at once. :(
+      # This isn't a huge deal for states, given how few of them there are.
+      {'maxResults' => ids.size}
+    )
   end
 
   # Generic function to hit arbitrary BroadbandMap APIs.
