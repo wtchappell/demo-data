@@ -68,10 +68,14 @@ class Main
   end
 
   def print_avg(demo_data)
-    total = demo_data.map { |data| data['incomeBelowPoverty'] }.reduce(&:+)
+    total_weight = demo_data.map { |data| data['population'] }.reduce(&:+)
+    weighted_sum = 0
+    demo_data.reduce(0.0) do |memo, data|
+      weighted_sum += data['incomeBelowPoverty'] * data['population']
+    end
     # The input had 4 significant figures.
-    avg = (total / demo_data.size.to_f).round(4)
-    puts avg
+    weighted_avg = (weighted_sum / total_weight).round(4)
+    puts weighted_avg
   end
 
   FORMATS = %w[CSV averages]
