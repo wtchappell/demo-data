@@ -50,7 +50,7 @@ class Main
   def parse_args
     @parser.parse!(@args)
     validate_options
-    @names = @args.first.split(',')
+    @names = @args.first.split(',').uniq
   end
 
   IMPORTANT_FIELDS = %w[
