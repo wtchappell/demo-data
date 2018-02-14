@@ -29,3 +29,10 @@ ASSUMPTIONS MADE
 
 * I assumed that every state maps to a valid FIPS ID, and that no two states
   share a FIPS ID.
+
+* Most of the useful testing for something this small is making sure you handle
+  various failure modes in your dependencies appropriately; the work involved
+  in validating the input and processing the results are pretty minimal.
+  With more time and access to a mocking library like RSpec's, I could write a
+  test suite that stubs the remote services to see how this code handles
+  various failures without actually making the service calls.
