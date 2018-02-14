@@ -14,12 +14,16 @@ class Main
     parse_args
 
     bb_api    = BroadbandAPI.new
-    demo_data = bb_api.query_demographics_by_state_name(@names)
+    demo_data = bb_api.query_demographics_by_state_name(*@names)
 
-    case(@options[:output_format])
+    case(@options[:output_format].to_sym)
     when :CSV
+      print_csv(demo_data)
     when :averages
+      print_avg(demo_data)
     end
+  rescue => e
+    abort(e.message)
   end
 
   private
@@ -47,6 +51,27 @@ class Main
     @parser.parse!(@args)
     validate_options
     @names = @args.first.split(',')
+  end
+
+  IMPORTANT_FIELDS = %w[
+    geographyName
+    population
+    households
+    incomeBelowPoverty
+    medianIncome
+  ]
+  def print_csv(demo_data)
+    rows = demo_data.map do |data|
+      IMPORTANT_FIELDS.map { |field| data[field] }.join(',')
+    end
+    puts rows
+  end
+
+  def print_avg(demo_data)
+    total = demo_data.map { |data| data['incomeBelowPoverty'] }.reduce(&:+)
+    # The input had 4 significant figures.
+    avg = (total / demo_data.size.to_f).round(4)
+    puts avg
   end
 
   FORMATS = %w[CSV averages]
