@@ -1,7 +1,69 @@
 #!/usr/bin/env ruby
+require 'optparse'
+require_relative '../lib/broadband_api'
 
 class Main
+  def initialize
+    @parser  = build_parser
+    @names   = []
+    @options = {}
+  end
+
   def run(args)
+    @args = args
+    parse_args
+
+    bb_api    = BroadbandAPI.new
+    demo_data = bb_api.query_demographics_by_state_name(@names)
+
+    case(@options[:output_format])
+    when :CSV
+    when :averages
+    end
+  end
+
+  private
+
+  def build_parser
+    OptionParser.new do |parser|
+      parser.banner = 'Usage: demo-data [OPTION]... STATE_NAMES_CSV'
+
+      parser.on(
+        '-f',
+        '--output-format FORMAT',
+        'CSV for each state, or average of income below poverty across them'
+      ) do |o|
+        @options[:output_format] = o
+      end
+
+      parser.on_tail('-h', '--help', 'Prints this help') do
+        puts parser
+        exit
+      end
+    end
+  end
+
+  def parse_args
+    @parser.parse!(@args)
+    validate_options
+    @names = @args.first.split(',')
+  end
+
+  FORMATS = %w[CSV averages]
+  def validate_options
+    unless @options.key?(:output_format)
+      @parser.abort('Output format is required.')
+    end
+
+    unless FORMATS.include?(@options[:output_format])
+      @parser.abort("Output format required; must be one of #{FORMATS}.")
+    end
+
+    if    @args.size > 1
+      @parser.abort('Only one CSV list accepted.')
+    elsif @args.size < 1
+      @parser.abort('At least one CSV list required.')
+    end
   end
 end
 
